@@ -7,10 +7,12 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("-m", "--month", required=True, help="month")
 parser.add_argument("-p", "--pay", required=True, help="job pays per hour")
+parser.add_argument("-n", "--name", required=False, help="name")
 args = parser.parse_args()
 
 month = args.month
 pay = int(args.pay)
+name = args.name if args.name else 'Kenshin Tanaka'
 
 path = 'timehistory.log'
 
@@ -26,7 +28,7 @@ sum = timedelta()
 
 with open(path) as f:
     for s_line in f:
-        if not '@Kenshin Tanaka' in s_line:
+        if not f'@{name}' in s_line:
             continue
         ymd = ymd_pattern.search(s_line)
         hm = hm_pattern.search(s_line)
