@@ -26,6 +26,7 @@ bye_dict = {}
 
 sum = timedelta()
 
+
 with open(path) as f:
     for s_line in f:
         if not f'@{name}' in s_line:
@@ -65,5 +66,6 @@ for ymd, bye_hm in bye_dict.items():
 
 hours = sum.days * 24 + sum.seconds/3600
 
-print('働いた時間:', '{:.1f}'.format(hours), '時間')
+print('出勤日数: ', len(bye_dict), '日')
+print('時間:', '{:.1f}'.format(hours), '時間')
 print('給料:', int(hours*pay), '円')
