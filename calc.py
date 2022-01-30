@@ -5,14 +5,17 @@ from datetime import datetime, timedelta
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-m", "--month", required=True, help="month")
-parser.add_argument("-p", "--pay", required=True, help="job pays per hour")
-parser.add_argument("-n", "--name", required=False, help="name")
+parser.add_argument("-m", "--month", required=False,
+                    help="month", default=datetime.now().month)
+parser.add_argument("-p", "--pay", required=False,
+                    help="job pays per hour", default=2000)
+parser.add_argument("-n", "--name", required=False,
+                    help="name", default="Kenshin Tanaka")
 args = parser.parse_args()
 
 month = args.month
 pay = int(args.pay)
-name = args.name if args.name else 'Kenshin Tanaka'
+name = args.name
 
 path = 'timehistory.log'
 
@@ -42,22 +45,19 @@ with open(path) as f:
             continue
 
         if 'おはよう' in s_line or '出勤' in s_line:
-            if not ymd in hi_dict:
-                hi_dict[ymd] = hm
-            else:
-                if hi_dict[ymd] > hm:
-                    hi_dict[ymd] = hm
+            hi_dict[ymd] = hm
         else:
-            if not ymd in bye_dict:
-                bye_dict[ymd] = hm
-            else:
-                if bye_dict[ymd] < hm:
-                    bye_dict[ymd] = hm
+            bye_dict[ymd] = hm
+        if ymd in hi_dict and ymd in bye_dict:
+            _hi_hm = datetime.strptime(hi_dict[ymd], '%H:%M')
+            _bye_hm = datetime.strptime(bye_dict[ymd], '%H:%M')
+            assert(_hi_hm <= _bye_hm)
 
 for ymd, bye_hm in bye_dict.items():
     if not ymd in hi_dict:
         continue
     hi_hm = hi_dict[ymd]
+    print(ymd, f"\n   出勤　{hi_hm}    退勤　{bye_hm}")
 
     bye_hm = datetime.strptime(bye_hm, '%H:%M')
     hi_hm = datetime.strptime(hi_hm, '%H:%M')
